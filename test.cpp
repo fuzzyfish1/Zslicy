@@ -1,68 +1,97 @@
-#include <cassert>
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <streambuf>
+#include "common.h"
+#include "point.h"
+#include <stdlib.h>
 
-#include "parse_stl.h"
+using namespace std;
 
-namespace stl {
+int main() {
 
-	std::ostream& operator<<(std::ostream& out, const point p) {
-	out << "(" << p.x << ", " << p.y << ", " << p.z << ")" << std::endl;
-	return out;
-}
+	coord* a = new coord();
 
-std::ostream& operator<<(std::ostream& out, const triangle& t) {
-	out << "---- TRIANGLE ----" << std::endl;
-	out << t.normal << std::endl;
-	out << t.v1 << std::endl;
-	out << t.v2 << std::endl;
-	out << t.v3 << std::endl;
-	return out;
-}
+	cout << "GET CHECKS: ";
 
-float parse_float(std::ifstream& s) {
-	char f_buf[sizeof(float)];
-	s.read(f_buf, 4);
-	float* fptr = (float*) f_buf;
-	return *fptr;
-}
+	ASSERT_MSG(a->getX() == 0, "fail1");
+	ASSERT_MSG(a->getY() == 0, "fail2");
+	ASSERT_MSG(a->getZ() == 0, "fail3");
 
-point parse_point(std::ifstream& s) {
-	float x = parse_float(s);
-	float y = parse_float(s);
-	float z = parse_float(s);
-	return point(x, y, z);
-}
+	cout << "PASS" << endl << "SET CHECKS: ";
 
-stl_data parse_stl(const std::string& stl_path) {
-	std::ifstream stl_file(stl_path.c_str(), std::ios::in | std::ios::binary);
+	a->setX(1);
+	a->setY(2);
+	a->setZ(3);
 
-	if (!stl_file) {
-		std::cout << "ERROR: COULD NOT READ FILE" << std::endl;
-		assert(false);
-	}
+	ASSERT_MSG(a->getX() == 1, "fail1");
+	ASSERT_MSG(a->getY() == 2, "fail2");
+	ASSERT_MSG(a->getZ() == 3, "fail3");
 
-	char header_info[80] = "";
-	char n_triangles[4];
-	stl_file.read(header_info, 80);
-	stl_file.read(n_triangles, 4);
-	std::string h(header_info);
-	stl_data info(h);
-	unsigned int* r = (unsigned int*) n_triangles;
-	unsigned int num_triangles = *r;
+	cout << "PASS" << endl << "EXPLICIT CONSTRUCTOR CHECKS: ";
 
-	for (unsigned int i = 0; i < num_triangles; i++) {
-		auto normal = parse_point(stl_file);
-		auto v1 = parse_point(stl_file);
-		auto v2 = parse_point(stl_file);
-		auto v3 = parse_point(stl_file);
-		info.triangles.push_back(triangle(normal, v1, v2, v3));
-		char dummy[2];
-		stl_file.read(dummy, 2);
-	}
-	return info;
-}
+	coord* b = new coord(3.0, 2.0, 1.0);
+
+	ASSERT_MSG(b->getX() == 3.0, "fail1");
+	ASSERT_MSG(b->getY() == 2.0, "fail2");
+	ASSERT_MSG(b->getZ() == 1.0, "fail3");
+
+	cout << "PASS" << endl << "operator [] ASSIGNMENTS CHECKS: ";
+
+	coord c = *b;
+
+	c[0] = 0.0;
+	c[1] = 1.0;
+	c[2] = 2.0;
+
+	ASSERT_MSG(c.getX() == 0.0, "fail1");
+	ASSERT_MSG(c.getY() == 1.0, "fail2");
+	ASSERT_MSG(c.getZ() == 2.0, "fail3");
+
+	cout << "PASS" << endl << "operator [] READ CHECKS: ";
+
+	ASSERT_MSG(c[0] == 0.0, "fail1");
+	ASSERT_MSG(c[1] == 1.0, "fail2");
+	ASSERT_MSG(c[2] == 2.0, "fail3");
+
+	cout << "PASS" << endl << "OPERATOR << CHECKS: ";
+
+	cout << c;
+
+	cout << "PASS" << endl << "COPY CONSTRUCTOR CHECKS: ";
+
+	coord d(c);
+
+	ASSERT_MSG((&d != &c), "same object");
+
+	d[1] = 10.0;
+
+	ASSERT_MSG(d[1] == 10.0, "fail1");
+	ASSERT_MSG(c[1] == 2.0, "fail2");
+
+	cout << "PASS" << endl << "op == CHECKS: ";
+
+	coord e = coord(1.0, 2.0, 3.0);
+	coord f(e);
+
+	ASSERT_MSG((e == f), "fail1");
+
+	e.setY(6.0);
+	ASSERT_MSG(((e == f) == 0), "fail2");
+
+	cout << "PASS" << endl << "operator +: ";
+
+	coord g(1.0, 2.0, 3.0);
+	coord h(2.0, 4.0, 6.0);
+
+	coord i(3.0, 6.0, 9.0);
+
+	ASSERT_MSG(((g + h) == i), "fail1");
+
+	cout << "PASS" << endl << "operator *: ";
+
+	int j = -2;
+
+	i = coord(-2.0, -4.0, -6.0);
+
+	ASSERT_MSG(((g * j) == i), "fail1");
+
+	i = coord(-1.0, -2.0, -3.0);
 
 }

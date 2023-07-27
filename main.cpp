@@ -33,11 +33,17 @@ using namespace std;
 *
 */
 
+/*
+*	TODO:
+*		I have a FileParser but we need to rebuild the struct of facet
+*		should be split into class Coord, class Facet, class Slice
+*
+*/
+
 int main (int argc, char *argv[]) {
 
 	string filePath = argc > 1 ? argv[1] : DEFAULT_FILE_PATH;
-
-	cout << "FILEPATH" << filePath << endl;
+	cout << "FILEPATH: " << filePath << endl;
 
 	vector<facet> facets = parseFile(filePath);
 
