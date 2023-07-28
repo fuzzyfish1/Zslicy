@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 
+#pragma once
+
 using namespace std;
 
 /*
@@ -15,8 +17,8 @@ using namespace std;
 *
 */
 
-#ifndef COMMON
-#define COMMON
+#ifndef COMMON_H
+#define COMMON_H
 
 #define ASSERT_MSG(val, msg) if(!val) { throw runtime_error(string("\x1b[1;31m") + msg + string("\033[0m")); }
 

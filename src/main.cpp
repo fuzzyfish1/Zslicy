@@ -3,12 +3,13 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include "fileParser.h"
-#include "common.h"
+#include <filesystem>
+#include "lib/common.h"
+#include "lib/fileParser.h"
 
 using namespace std;
 
-#define DEFAULT_FILE_PATH "./cat.stl"
+#define DEFAULT_FILE_PATH "../STL/cat.stl"
 
 /*
 *	Takes a STL file and spits out GCode
@@ -43,7 +44,10 @@ using namespace std;
 int main (int argc, char *argv[]) {
 
 	string filePath = argc > 1 ? argv[1] : DEFAULT_FILE_PATH;
-	cout << "FILEPATH: " << filePath << endl;
+
+	//TODO: remove the ../ from the printed filePath, its kinda weird
+	cout << "FILEPATH_GIVEN: " << filePath << endl;
+	cout << "ABS_FILEPATH: " << std::filesystem::absolute(filePath) << endl;
 
 	vector<facet> facets = parseFile(filePath);
 

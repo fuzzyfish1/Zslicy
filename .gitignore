@@ -2,3 +2,7 @@
 CMakeFiles
 CMakeCache.txt
 Makefile
+bin/*
+.cmake
+cmake-build-default-event-trace
+Testing/
